@@ -153,4 +153,4 @@ As a user, I should be able to:
 
 ## Copyright
 
-Released under the MIT License. See the [LICENSE](https://github.com/john-maluki/bank-of-flatiron/blob/main/License) file.
+Released under the MIT License. See the [LICENSE](https://github.com/john-maluki/bank-of-flatiron/blob/main/LICENSE) file.
