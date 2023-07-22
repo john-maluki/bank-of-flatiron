@@ -5,12 +5,15 @@ import TransactionTable from "./components/TransactionTable";
 import { MAIN_API_URL } from "./components/utils/utils";
 import CategoryFilter from "./components/CategoryFilter";
 import TransactionSearch from "./components/TransactionSearch";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 function App() {
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [categoryValue, setCategoryValue] = useState("All");
-  const [searchValue, setSearchValue] = useState(" ");
+  const [searchValue, setSearchValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const handleTransactionFormToggling = () => {
     setIsTransactionFormOpen(!isTransactionFormOpen);
@@ -21,10 +24,16 @@ function App() {
     : "create-search__add-btn";
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(`${MAIN_API_URL}/transactions`)
       .then((resp) => resp.json())
       .then((trans) => {
         setTransactions(trans);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        setHasError(true);
       });
   }, []);
 
@@ -41,7 +50,6 @@ function App() {
 
   const onSearch = (str) => {
     setSearchValue(str);
-    console.log(str);
   };
 
   const filteredTransactions = transactions
@@ -76,7 +84,13 @@ function App() {
           />
         </section>
         {isTransactionFormOpen ? <TransactionForm /> : null}
-        <TransactionTable transactions={filteredTransactions} />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : !hasError ? (
+          <TransactionTable transactions={filteredTransactions} />
+        ) : (
+          <p className="center">Check your network connection!!!</p>
+        )}
       </main>
     </div>
   );
