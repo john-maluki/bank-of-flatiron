@@ -18,6 +18,23 @@ function App() {
   const [searchValue, setSearchValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [formData, setFormData] = useState({
+    id: null,
+    date: "",
+    description: "",
+    category: "Income",
+    amount: 0,
+  });
+
+  const resetFormData = () => {
+    setFormData({
+      id: null,
+      date: "",
+      description: "",
+      category: "Income",
+      amount: 0,
+    });
+  };
 
   const handleTransactionFormToggling = () => {
     setIsTransactionFormOpen(!isTransactionFormOpen);
@@ -41,6 +58,21 @@ function App() {
       });
   }, []);
 
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    const obj = { ...formData, [name]: value };
+    setFormData(obj);
+  };
+
+  const handleFormSubmission = (e) => {
+    e.preventDefault();
+    if (formData.id === null) {
+      addTransaction(formData);
+    } else {
+      updateTransaction(formData);
+    }
+  };
+
   const getDistinctCategories = () => {
     const allCategories = [
       ...new Set(transactions.map((transaction) => transaction.category)),
@@ -57,6 +89,7 @@ function App() {
   const onSearch = (str) => {
     setSearchValue(str);
   };
+
   const addTransaction = (transactionData) => {
     fetch(`${MAIN_API_URL}/transactions`, {
       method: "POST",
@@ -69,6 +102,33 @@ function App() {
       .then((transaction) => setTransactions([transaction, ...transactions]));
   };
 
+  const updateTransaction = (transactionData) => {
+    fetch(`${MAIN_API_URL}/transactions/${transactionData.id}`, {
+      method: "PATCH",
+      body: JSON.stringify(transactionData),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((resp) => resp.json())
+      .then((updatedTransaction) => {
+        const newTrans = transactions.map((transaction) =>
+          transaction.id === transactionData.id
+            ? { ...updatedTransaction }
+            : transaction
+        );
+        setTransactions(newTrans);
+        resetFormData();
+      });
+  };
+
+  const onTransactionUpdate = (id) => {
+    // Initialize formData when edit button is clicked
+    const tran = transactions.find((transaction) => transaction.id === id);
+    setFormData(tran);
+    setIsTransactionFormOpen(true);
+  };
+
   const onTransactionDelete = (id) => {
     fetch(`${MAIN_API_URL}/transactions/${id}`, {
       method: "DELETE",
@@ -77,7 +137,6 @@ function App() {
       },
     }).then((resp) => {
       if (resp.status === 200) {
-        // const newTrans = transactions.filter((tran) => tran.id !== id);
         setTransactions((transactions) =>
           transactions.filter((tran) => tran.id !== id)
         );
@@ -121,7 +180,9 @@ function App() {
         {isTransactionFormOpen ? (
           <TransactionForm
             categories={distinctCategories}
-            addTransaction={addTransaction}
+            formData={formData}
+            onFormChange={handleFormChange}
+            handleFormSubmission={handleFormSubmission}
           />
         ) : null}
         {isLoading ? (
@@ -129,6 +190,7 @@ function App() {
         ) : !hasError ? (
           <TransactionTable
             transactions={sortedTransactionByDate}
+            onTransactionUpdate={onTransactionUpdate}
             onTransactionDelete={onTransactionDelete}
           />
         ) : (

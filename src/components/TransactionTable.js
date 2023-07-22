@@ -2,7 +2,11 @@ import React from "react";
 import TransactionTableBody from "./TransactionTableBody";
 import TransactionTableHeader from "./TransactionTableHeader";
 
-const TransactionTable = ({ transactions, onTransactionDelete }) => {
+const TransactionTable = ({
+  transactions,
+  onTransactionUpdate,
+  onTransactionDelete,
+}) => {
   return (
     <div className="container transaction-table">
       <table className="responsive-table">
@@ -10,6 +14,7 @@ const TransactionTable = ({ transactions, onTransactionDelete }) => {
         <TransactionTableHeader />
         <TransactionTableBody
           transactions={transactions}
+          onTransactionUpdate={onTransactionUpdate}
           onTransactionDelete={onTransactionDelete}
         />
       </table>

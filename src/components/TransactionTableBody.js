@@ -1,6 +1,11 @@
 import React from "react";
+import Button from "./Button";
 
-const TransactionTableBody = ({ transactions, onTransactionDelete }) => {
+const TransactionTableBody = ({
+  transactions,
+  onTransactionUpdate,
+  onTransactionDelete,
+}) => {
   const transformedDate = (date) => {
     return date;
   };
@@ -21,16 +26,18 @@ const TransactionTableBody = ({ transactions, onTransactionDelete }) => {
             </td>
             <td data-title="Manage Transaction">
               <div>
-                <button type="button" className="btn btn-secondary btn-sm mr-2">
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
-                  onClick={() => onTransactionDelete(transaction.id)}
-                >
-                  Delete
-                </button>
+                <Button
+                  textContent={"Edit"}
+                  type={"button"}
+                  className={"btn btn-secondary btn-sm mr-2"}
+                  onAction={() => onTransactionUpdate(transaction.id)}
+                />
+                <Button
+                  textContent={"Delete"}
+                  type={"button"}
+                  className={"btn btn-danger btn-sm"}
+                  onAction={() => onTransactionDelete(transaction.id)}
+                />
               </div>
             </td>
           </tr>

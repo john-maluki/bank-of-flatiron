@@ -1,24 +1,12 @@
 import React, { useState } from "react";
 import CategoryOptions from "./CategoryOptions";
 
-const TransactionForm = ({ categories, addTransaction }) => {
-  const [formData, setFormData] = useState({
-    date: "",
-    description: "",
-    category: "Income",
-    amount: 0,
-  });
-
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    const obj = { ...formData, [name]: value };
-    setFormData(obj);
-  };
-
-  const handleFormSubmission = (e) => {
-    e.preventDefault();
-    addTransaction(formData);
-  };
+const TransactionForm = ({
+  categories,
+  formData,
+  onFormChange,
+  handleFormSubmission,
+}) => {
   return (
     <section className="transaction-form">
       <form className="transaction-form__form" onSubmit={handleFormSubmission}>
@@ -34,7 +22,7 @@ const TransactionForm = ({ categories, addTransaction }) => {
             required
             pattern="\d{4}-\d{2}-\d{2}"
             value={formData.date}
-            onChange={handleFormChange}
+            onChange={onFormChange}
           />
         </div>
         <div className="transaction-form__wraper">
@@ -47,7 +35,7 @@ const TransactionForm = ({ categories, addTransaction }) => {
             id="description"
             name="description"
             value={formData.description}
-            onChange={handleFormChange}
+            onChange={onFormChange}
           />
         </div>
         <div className="transaction-form__wraper">
@@ -57,7 +45,7 @@ const TransactionForm = ({ categories, addTransaction }) => {
             id="category"
             name="category"
             value={formData.category}
-            onChange={handleFormChange}
+            onChange={onFormChange}
           >
             <CategoryOptions categories={categories} />
           </select>
@@ -72,7 +60,7 @@ const TransactionForm = ({ categories, addTransaction }) => {
             id="amount"
             name="amount"
             value={formData.amount}
-            onChange={handleFormChange}
+            onChange={onFormChange}
           />
         </div>
         <div className="transaction-form__wraper">
