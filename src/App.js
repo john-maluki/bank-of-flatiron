@@ -98,7 +98,10 @@ function App() {
       },
     })
       .then((resp) => resp.json())
-      .then((transaction) => setTransactions([transaction, ...transactions]));
+      .then((transaction) => {
+        setTransactions([transaction, ...transactions]);
+        resetFormData();
+      });
   };
 
   const updateTransaction = (transactionData) => {
