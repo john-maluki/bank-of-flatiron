@@ -1,19 +1,29 @@
 import React from "react";
 
-const TransactionTableHeader = () => {
+const TransactionTableHeader = ({ sortTransanction }) => {
   return (
     <thead>
       <tr>
         <th scope="col">Date</th>
         <th scope="col">Description</th>
         <th scope="col">
-          <div>
-            Category <i className="fa fa-sort" aria-hidden="true"></i>
+          <div className="trans-sort">
+            Category{" "}
+            <i
+              className="fa fa-sort"
+              aria-hidden="true"
+              onClick={() => sortTransanction("category")}
+            ></i>
           </div>
         </th>
         <th scope="col">
-          <div>
-            Amount (KSH) <i className="fa fa-sort" aria-hidden="true"></i>
+          <div className="trans-sort">
+            Amount (KSH){" "}
+            <i
+              className="fa fa-sort"
+              aria-hidden="true"
+              onClick={() => sortTransanction("amount")}
+            ></i>
           </div>
         </th>
         <th scope="col">Manage</th>

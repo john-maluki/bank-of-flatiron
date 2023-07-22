@@ -122,3 +122,8 @@ button {
   margin: 20%;
   opacity: 0.6;
 }
+
+/* Transaction sort */
+.trans-sort i {
+  cursor: pointer;
+}

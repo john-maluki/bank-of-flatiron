@@ -3,10 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
-import {
-  MAIN_API_URL,
-  sortTransanctionsByDate,
-} from "./components/utils/utils";
+import { MAIN_API_URL } from "./components/utils/utils";
 import CategoryFilter from "./components/CategoryFilter";
 import TransactionSearch from "./components/TransactionSearch";
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -17,6 +14,8 @@ function App() {
   const [categoryValue, setCategoryValue] = useState("All");
   const [searchValue, setSearchValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSortedByAmount, setIsSortedByAmount] = useState(false);
+  const [isSortedByCategory, setIsSortedByCategory] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [formData, setFormData] = useState({
     id: null,
@@ -156,7 +155,53 @@ function App() {
       transaction.description.toLowerCase().includes(searchValue.toLowerCase())
     );
 
-  const sortedTransactionByDate = sortTransanctionsByDate(filteredTransactions);
+  const sortTransansactionByAmount = () => {
+    const trans = [...transactions].sort((aTran, bTran) => {
+      if (!isSortedByAmount) {
+        return aTran.amount - bTran.amount;
+      } else {
+        return bTran.amount - aTran.amount;
+      }
+    });
+    setTransactions(trans);
+    setIsSortedByAmount(!isSortedByAmount);
+  };
+
+  const sortTransansactionByCategory = () => {
+    const trans = [...transactions].sort((aTran, bTran) => {
+      const aCategory = aTran.category.toUpperCase(); // ignore upper and lowercase
+      const bCategory = bTran.category.toUpperCase(); // ignore upper and lowercase
+      if (!isSortedByCategory) {
+        if (aCategory < bCategory) {
+          return -1;
+        }
+        if (aCategory > bCategory) {
+          return 1;
+        }
+      } else {
+        if (aCategory < bCategory) {
+          return 1;
+        }
+        if (aCategory > bCategory) {
+          return -1;
+        }
+      }
+
+      // category must be equal
+      return 0;
+    });
+    setTransactions(trans);
+    setIsSortedByCategory(!isSortedByCategory);
+  };
+
+  const sortTransanction = (key) => {
+    if (key === "amount") {
+      sortTransansactionByAmount();
+    } else {
+      // sort by category
+      sortTransansactionByCategory();
+    }
+  };
 
   return (
     <div className="app-container">
@@ -189,9 +234,10 @@ function App() {
           <LoadingSpinner />
         ) : !hasError ? (
           <TransactionTable
-            transactions={sortedTransactionByDate}
+            transactions={filteredTransactions}
             onTransactionUpdate={onTransactionUpdate}
             onTransactionDelete={onTransactionDelete}
+            sortTransanction={sortTransanction}
           />
         ) : (
           <p className="center">Check your network connection!!!</p>
