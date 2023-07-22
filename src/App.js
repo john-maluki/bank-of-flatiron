@@ -3,10 +3,12 @@ import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
 import { MAIN_API_URL } from "./components/utils/utils";
+import CategoryFilter from "./components/CategoryFilter";
 
 function App() {
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [transactions, setTransactions] = useState([]);
+  const [categoryValue, setCategoryValue] = useState("All");
 
   const handleTransactionFormToggling = () => {
     setIsTransactionFormOpen(!isTransactionFormOpen);
@@ -23,6 +25,25 @@ function App() {
         setTransactions(trans);
       });
   }, []);
+
+  const getDistinctCategories = () => {
+    const allCategories = [
+      ...new Set(transactions.map((transaction) => transaction.category)),
+    ];
+    return allCategories;
+  };
+
+  const onCategoryValueChange = (category) => {
+    setCategoryValue(category);
+  };
+
+  const filteredTransactions = transactions.filter((transaction) => {
+    if (categoryValue === "All") {
+      return true;
+    } else {
+      return transaction.category === categoryValue;
+    }
+  });
 
   return (
     <div className="app-container">
@@ -42,14 +63,13 @@ function App() {
               placeholder="Search Transactions"
             />
           </div>
-          <select className="category-filter">
-            <option value="Foog">Food</option>
-            <option value="Foog">Food</option>
-            <option value="Foog">Food</option>
-          </select>
+          <CategoryFilter
+            categories={getDistinctCategories()}
+            onCategoryValueChange={onCategoryValueChange}
+          />
         </section>
         {isTransactionFormOpen ? <TransactionForm /> : null}
-        <TransactionTable transactions={transactions} />
+        <TransactionTable transactions={filteredTransactions} />
       </main>
     </div>
   );
