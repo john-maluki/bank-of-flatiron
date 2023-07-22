@@ -127,3 +127,7 @@ button {
 .trans-sort i {
   cursor: pointer;
 }
+
+.negative-amount {
+  color: red;
+}

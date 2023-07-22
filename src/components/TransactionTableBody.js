@@ -7,8 +7,16 @@ const TransactionTableBody = ({
   onTransactionDelete,
 }) => {
   const transformedDate = (date) => {
-    return date;
+    return new Date(date).toDateString();
   };
+  const colorAmountBelowZero = (amt) => {
+    if (amt < 0) {
+      return "negative-amount";
+    } else {
+      return "";
+    }
+  };
+
   const transactionList =
     transactions.length === 0 ? (
       <tr>
@@ -21,7 +29,11 @@ const TransactionTableBody = ({
             <th scope="row">{transformedDate(transaction.date)}</th>
             <td data-title="Description">{transaction.description}</td>
             <td data-title="Category">{transaction.category}</td>
-            <td data-title="amount" data-type="currency">
+            <td
+              data-title="amount"
+              data-type="currency"
+              className={colorAmountBelowZero(transaction.amount)}
+            >
               {transaction.amount}
             </td>
             <td data-title="Manage Transaction">
