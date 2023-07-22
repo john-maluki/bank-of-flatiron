@@ -1,6 +1,28 @@
 import React from "react";
 
-const TransactionTable = () => {
+const TransactionTable = ({ transactions }) => {
+  const transactionList = transactions.map((transaction) => {
+    return (
+      <tr key={transaction.id}>
+        <th scope="row">{transaction.date}</th>
+        <td data-title="Description">{transaction.description}</td>
+        <td data-title="Category">{transaction.category}</td>
+        <td data-title="amount" data-type="currency">
+          {transaction.amount}
+        </td>
+        <td data-title="Manage Transaction">
+          <div>
+            <button type="button" className="btn btn-secondary btn-sm mr-2">
+              Edit
+            </button>
+            <button type="button" className="btn btn-danger btn-sm">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  });
   return (
     <div className="container transaction-table">
       <table className="responsive-table">
@@ -22,62 +44,7 @@ const TransactionTable = () => {
             <th scope="col">Manage</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">2019-12-01</th>
-            <td data-title="Description">Paycheck from Bob's Burgers</td>
-            <td data-title="Category">Income</td>
-            <td data-title="amount" data-type="currency">
-              1000
-            </td>
-            <td data-title="Manage Transaction">
-              <div>
-                <button type="button" className="btn btn-primary btn-sm">
-                  Small button
-                </button>
-                <button type="button" className="btn btn-secondary btn-sm">
-                  Small button
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">2019-12-01</th>
-            <td data-title="Description">Paycheck from Bob's Burgers</td>
-            <td data-title="Category">Income</td>
-            <td data-title="amount" data-type="currency">
-              1000
-            </td>
-            <td data-title="Manage Transaction">
-              <div>
-                <button type="button" className="btn btn-primary btn-sm">
-                  Small button
-                </button>
-                <button type="button" className="btn btn-secondary btn-sm">
-                  Small button
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">2019-12-01</th>
-            <td data-title="Description">Paycheck from Bob's Burgers</td>
-            <td data-title="Category">Income</td>
-            <td data-title="amount" data-type="currency">
-              1000
-            </td>
-            <td data-title="Manage Transaction">
-              <div>
-                <button type="button" className="btn btn-secondary btn-sm mr-2">
-                  Edit
-                </button>
-                <button type="button" className="btn btn-danger btn-sm">
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
+        <tbody>{transactionList}</tbody>
       </table>
     </div>
   );
