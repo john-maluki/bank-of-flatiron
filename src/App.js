@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import "./App.css";
 import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
-import { MAIN_API_URL } from "./components/utils/utils";
+import {
+  MAIN_API_URL,
+  sortTransanctionsByDate,
+} from "./components/utils/utils";
 import CategoryFilter from "./components/CategoryFilter";
 import TransactionSearch from "./components/TransactionSearch";
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -31,7 +35,7 @@ function App() {
         setTransactions(trans);
         setIsLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setIsLoading(false);
         setHasError(true);
       });
@@ -44,12 +48,41 @@ function App() {
     return allCategories;
   };
 
+  const distinctCategories = getDistinctCategories();
+
   const onCategoryValueChange = (category) => {
     setCategoryValue(category);
   };
 
   const onSearch = (str) => {
     setSearchValue(str);
+  };
+  const addTransaction = (transactionData) => {
+    fetch(`${MAIN_API_URL}/transactions`, {
+      method: "POST",
+      body: JSON.stringify(transactionData),
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((resp) => resp.json())
+      .then((transaction) => setTransactions([transaction, ...transactions]));
+  };
+
+  const onTransactionDelete = (id) => {
+    fetch(`${MAIN_API_URL}/transactions/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    }).then((resp) => {
+      if (resp.status === 200) {
+        // const newTrans = transactions.filter((tran) => tran.id !== id);
+        setTransactions((transactions) =>
+          transactions.filter((tran) => tran.id !== id)
+        );
+      }
+    });
   };
 
   const filteredTransactions = transactions
@@ -63,6 +96,8 @@ function App() {
     .filter((transaction) =>
       transaction.description.toLowerCase().includes(searchValue.toLowerCase())
     );
+
+  const sortedTransactionByDate = sortTransanctionsByDate(filteredTransactions);
 
   return (
     <div className="app-container">
@@ -79,15 +114,23 @@ function App() {
             <TransactionSearch onSearch={onSearch} />
           </div>
           <CategoryFilter
-            categories={getDistinctCategories()}
+            categories={distinctCategories}
             onCategoryValueChange={onCategoryValueChange}
           />
         </section>
-        {isTransactionFormOpen ? <TransactionForm /> : null}
+        {isTransactionFormOpen ? (
+          <TransactionForm
+            categories={distinctCategories}
+            addTransaction={addTransaction}
+          />
+        ) : null}
         {isLoading ? (
           <LoadingSpinner />
         ) : !hasError ? (
-          <TransactionTable transactions={filteredTransactions} />
+          <TransactionTable
+            transactions={sortedTransactionByDate}
+            onTransactionDelete={onTransactionDelete}
+          />
         ) : (
           <p className="center">Check your network connection!!!</p>
         )}

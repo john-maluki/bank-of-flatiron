@@ -1,12 +1,8 @@
 import React, { useState } from "react";
+import CategoryOptions from "./CategoryOptions";
 
 const CategoryFilter = ({ categories, onCategoryValueChange }) => {
   const [selectValue, setSelectValue] = useState("All");
-  const optionList = categories.map((category) => (
-    <option key={category} value={category}>
-      {category}
-    </option>
-  ));
 
   const handleSelectValueChange = (e) => {
     const value = e.target.value;
@@ -20,7 +16,7 @@ const CategoryFilter = ({ categories, onCategoryValueChange }) => {
       className="category-filter"
     >
       <option value="All">All</option>
-      {optionList}
+      <CategoryOptions categories={categories} />
     </select>
   );
 };
