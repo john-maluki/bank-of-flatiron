@@ -4,11 +4,13 @@ import TransactionForm from "./components/TransactionForm";
 import TransactionTable from "./components/TransactionTable";
 import { MAIN_API_URL } from "./components/utils/utils";
 import CategoryFilter from "./components/CategoryFilter";
+import TransactionSearch from "./components/TransactionSearch";
 
 function App() {
   const [isTransactionFormOpen, setIsTransactionFormOpen] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [categoryValue, setCategoryValue] = useState("All");
+  const [searchValue, setSearchValue] = useState(" ");
 
   const handleTransactionFormToggling = () => {
     setIsTransactionFormOpen(!isTransactionFormOpen);
@@ -37,13 +39,22 @@ function App() {
     setCategoryValue(category);
   };
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    if (categoryValue === "All") {
-      return true;
-    } else {
-      return transaction.category === categoryValue;
-    }
-  });
+  const onSearch = (str) => {
+    setSearchValue(str);
+    console.log(str);
+  };
+
+  const filteredTransactions = transactions
+    .filter((transaction) => {
+      if (categoryValue === "All") {
+        return true;
+      } else {
+        return transaction.category === categoryValue;
+      }
+    })
+    .filter((transaction) =>
+      transaction.description.toLowerCase().includes(searchValue.toLowerCase())
+    );
 
   return (
     <div className="app-container">
@@ -57,11 +68,7 @@ function App() {
             >
               {isTransactionFormOpen ? "Close" : "Add Transaction"}
             </button>
-            <input
-              className="search-transaction"
-              type="search"
-              placeholder="Search Transactions"
-            />
+            <TransactionSearch onSearch={onSearch} />
           </div>
           <CategoryFilter
             categories={getDistinctCategories()}
