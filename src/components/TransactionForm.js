@@ -1,10 +1,12 @@
 import React from "react";
 import CategoryOptions from "./CategoryOptions";
+import { Audio } from "react-loader-spinner";
 
 const TransactionForm = ({
   categories,
   formData,
   onFormChange,
+  isSavingForm,
   handleFormSubmission,
 }) => {
   return (
@@ -64,11 +66,23 @@ const TransactionForm = ({
           />
         </div>
         <div className="transaction-form__wraper">
-          <input
-            className="transaction-form__submit"
-            type="submit"
-            value="Save"
-          />
+          {isSavingForm ? (
+            <Audio
+              height="70"
+              width="70"
+              color="#4fa94d"
+              ariaLabel="audio-loading"
+              wrapperStyle={{}}
+              wrapperClass="wrapper-class"
+              visible={true}
+            />
+          ) : (
+            <input
+              className="transaction-form__submit"
+              type="submit"
+              value="Save"
+            />
+          )}
         </div>
       </form>
     </section>

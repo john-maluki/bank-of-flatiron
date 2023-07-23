@@ -5,7 +5,7 @@
       "date": "2019-12-01",
       "description": "Paycheck from Bob's Burgers",
       "category": "Income",
-      "amount": 1000
+      "amount": "1000"
     },
     {
       "id": 2,

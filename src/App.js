@@ -14,6 +14,7 @@ function App() {
   const [categoryValue, setCategoryValue] = useState("All");
   const [searchValue, setSearchValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSavingForm, setIsSavingForm] = useState(false);
   const [isSortedByAmount, setIsSortedByAmount] = useState(false);
   const [isSortedByCategory, setIsSortedByCategory] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -33,6 +34,10 @@ function App() {
       category: "Income",
       amount: 0,
     });
+  };
+
+  const toggleIsSavingForm = () => {
+    setIsSavingForm((isSavingForm) => !isSavingForm);
   };
 
   const handleTransactionFormToggling = () => {
@@ -90,6 +95,7 @@ function App() {
   };
 
   const addTransaction = (transactionData) => {
+    toggleIsSavingForm(); //make it true
     fetch(`${MAIN_API_URL}/transactions`, {
       method: "POST",
       body: JSON.stringify(transactionData),
@@ -101,10 +107,12 @@ function App() {
       .then((transaction) => {
         setTransactions([transaction, ...transactions]);
         resetFormData();
+        toggleIsSavingForm();
       });
   };
 
   const updateTransaction = (transactionData) => {
+    toggleIsSavingForm();
     fetch(`${MAIN_API_URL}/transactions/${transactionData.id}`, {
       method: "PATCH",
       body: JSON.stringify(transactionData),
@@ -121,6 +129,7 @@ function App() {
         );
         setTransactions(newTrans);
         resetFormData();
+        toggleIsSavingForm();
       });
   };
 
@@ -229,6 +238,7 @@ function App() {
           <TransactionForm
             categories={distinctCategories}
             formData={formData}
+            isSavingForm={isSavingForm}
             onFormChange={handleFormChange}
             handleFormSubmission={handleFormSubmission}
           />
