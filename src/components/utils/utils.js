@@ -1,5 +1,5 @@
-const MAIN_API_URL = "http://localhost:3001";
-// const MAIN_API_URL = "https://api-flatiron-recent-transactions.onrender.com";
+// const MAIN_API_URL = "http://localhost:3001";
+const MAIN_API_URL = "https://api-flatiron-recent-transactions.onrender.com";
 
 const sortTransanctionsByDate = (transactions) => {
   return transactions.sort(function (a, b) {
