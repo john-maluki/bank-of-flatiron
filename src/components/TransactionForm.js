@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import CategoryOptions from "./CategoryOptions";
 
 const TransactionForm = ({
